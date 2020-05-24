@@ -6,9 +6,9 @@
  */
 
 //les imports importants
-import React from 'react'
+import React, {useState, useContext} from 'react'
 import ReactDOM from 'react-dom'
-import { HashRouter, Switch, Route } from "react-router-dom"
+import { HashRouter, Switch, Route, withRouter } from "react-router-dom"
  
 // any CSS you import will output into a single css file (app.css in this case)
 import '../css/app.css'
@@ -17,22 +17,41 @@ import HomePage from './pages/HomePage'
 import CustomersPage from './pages/CustomersPage'
 import CustomersPageWithPagination from './pages/CustomersPageWithPagination'
 import InvoicesPage from './pages/InvoicesPage'
+import LoginPage from './pages/LoginPage'
+import LoginAPI from './services/loginAPI'
+import AuthContext from './contexts/authContext'
+import PrivateRoute from './components/PrivateRoute'
+import loginAPI from './services/loginAPI'
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 // import $ from 'jquery';
 
-const App = () => {
-    return <HashRouter>
-        <NavBar />
+LoginAPI.setUp();
+    
 
-        <main className="container pt-5">
-            <Switch>
-                <Route path="/invoices" component={InvoicesPage} />
-                <Route path="/customers" component={CustomersPage} />
-                <Route path="/" component={HomePage} />
-            </Switch>
-        </main>
-    </HashRouter>
+const App = () => {
+
+    const [isAuthenticated, setIsAuthenticated] = useState(LoginAPI.isAuthenticated())
+    const [roles, setRoles] = useState(loginAPI.getRoles())
+
+    const NavBarWithRouter = withRouter(NavBar);
+
+    return (
+        <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated, roles}}>
+            <HashRouter>
+                <NavBarWithRouter />
+
+                <main className="container pt-5">
+                    <Switch>
+                        <Route path="/login" component={LoginPage} />
+                        <PrivateRoute path="/invoices" component={InvoicesPage} />
+                        <PrivateRoute path="/customers" component={CustomersPage} />
+                        <Route path="/" component={HomePage} />
+                    </Switch>
+                </main>
+            </HashRouter>
+        </AuthContext.Provider>
+    )
 }
 
 const rootElement = document.querySelector('#app');
