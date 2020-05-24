@@ -1,6 +1,10 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
+/**
+ * Au moment de la connexion on passe les credentials, on ajoute ce token au localStorage et on donne à axios ce token pour la suite des requetes
+ * @param {object} credentials 
+ */
 function login(credentials) {
     return axios
         .post("http://localhost:8000/api/login_check", credentials)
@@ -15,12 +19,17 @@ function login(credentials) {
             return true
         })
 }
-
+/**
+ * Suppression du token dans le localStorage et dans axios
+ */
 function logout() {
     window.localStorage.removeItem("authToken");
     delete axios.defaults.headers["Authorization"];
 }
-
+/**
+ * On ajoute le token a axios pour toutes les requetes suivantes
+ * @param {string} token 
+ */
 function setAxiosToken(token){
     axios.defaults.headers["Authorization"] = "Bearer " + token
 }
@@ -43,6 +52,9 @@ function notExpiredToken(token){
     return false
 }
 
+/**
+ * On vérifie si le est encore valide au moment du chargement de la page
+ */
 function setUp() {
     // Vérifier si on a un token
     const token = getToken();
@@ -55,6 +67,9 @@ function setUp() {
     }
 }
 
+/**
+ * Permet de récupérer les rôles. Permet d'afficher des onglets supplémentaires dans la navbar
+ */
 function getRoles(){
     if(isAuthenticated){
         const token = getToken();
@@ -66,6 +81,9 @@ function getRoles(){
     return [];
 }
 
+/**
+ * Permet de vérifier si on est authentifié ou pas
+ */
 function isAuthenticated() {
 
     const token = getToken();
