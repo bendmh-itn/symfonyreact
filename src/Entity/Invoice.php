@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "normalization_context"={"groups"={"invoices_subresource"}} 
  *          }
  *      },
- *      itemOperations={"get", "delete", "patch", 
+ *      itemOperations={"get", "delete", "put", 
  *      "increment"={
  *      "method"="post", 
  *      "path"="/invoices/{id}/increment", 

@@ -1,9 +1,24 @@
 import axios from "axios";
 
+//Cette fonction renvoie les customers de l'utilisateur connecté
 function findAll() {
     return axios
         .get("http://localhost:8000/api/customers")
         .then(response => response.data["hydra:member"]);
+}
+
+function findOne(id) {
+    return axios
+    .get("http://localhost:8000/api/customers/" + id)
+    .then(response => response.data)
+}
+
+function update(id, customer) {
+    axios.put("http://localhost:8000/api/customers/" + id, customer)
+}
+
+function create(customer){
+    axios.post("http://localhost:8000/api/customers", customer)
 }
 
 function deleteCustomer(id) {
@@ -13,5 +28,8 @@ function deleteCustomer(id) {
 
 export default {
     findAll,
-    delete : deleteCustomer
+    delete : deleteCustomer,
+    update,
+    create,
+    findOne
 }

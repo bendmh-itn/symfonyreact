@@ -5,11 +5,12 @@ import AuthContext from '../contexts/authContext'
 
 const Navbar = ({history}) => {
 
-    const {isAuthenticated, setIsAuthenticated, roles } = useContext(AuthContext)
+    const {isAuthenticated, setIsAuthenticated, roles, setRoles } = useContext(AuthContext)
 
     const handleLogout = () => {
         loginAPI.logout();
         setIsAuthenticated(false);
+        setRoles([]);
         history.push("/login")
     }
 
