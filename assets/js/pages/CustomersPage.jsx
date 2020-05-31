@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import CustomersAPI from "../services/customersAPI";
 import { Link } from "react-router-dom";
+import TableLoader from "../components/loaders/TableLoader";
 
 const CustomersPage = (props) => {
   const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   /*Pour permettre de lancer la fonction asynchrone il faut créer une nouvelle fonction. 
     Réact interdit d'utiliser une fonction asynchrone directement dans le useEffect
@@ -15,8 +17,9 @@ const CustomersPage = (props) => {
     try {
       const data = await CustomersAPI.findAll();
       setCustomers(data);
+      setLoading(false);
     } catch (error) {
-      (error) => console.log(error.response);
+      toast.error("Un erreur est survenue lors du chargement des clients");
     }
   };
 
@@ -34,16 +37,11 @@ const CustomersPage = (props) => {
     //méthode try and catch (plus intéressante)
     try {
       await CustomersAPI.delete(id);
+      toast.success("Le client a bien été supprimée");
     } catch (error) {
       setCustomers(originalCustomers);
+      toast.error("Une erreur est survenue");
     }
-    //méthode .then .catch (je laisse pour m'en rappeler)
-    /*CustomersAPI.delete(id)
-            .then(response => console.log("ok"))
-            .catch(error => {
-                setCustomers(originalCustomers);
-                console.log(error)
-            })*/
   };
 
   // Gestion du changement de page
@@ -109,38 +107,41 @@ const CustomersPage = (props) => {
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          {paginatedCustomers.map((customer) => (
-            <tr key={customer.id}>
-              <td>{customer.id}</td>
-              <td>
-                <a href="#">
-                  {customer.firstname} {customer.lastname}
-                </a>
-              </td>
-              <td>{customer.email}</td>
-              <td>{customer.company}</td>
-              <td className="text-center">
-                <span className="badge badge-light">
-                  {customer.invoices.length}
-                </span>
-              </td>
-              <td className="text-center">
-                {customer.totalAmount.toLocaleString()} €
-              </td>
-              <td>
-                <button
-                  onClick={() => handleDelete(customer.id)}
-                  disabled={customer.invoices.length > 0}
-                  className="btn btn-sm btn-danger"
-                >
-                  Supprimer
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+        {!loading && (
+          <tbody>
+            {paginatedCustomers.map((customer) => (
+              <tr key={customer.id}>
+                <td>{customer.id}</td>
+                <td>
+                  <Link to={"/customers/" + customer.id}>
+                    {customer.firstname} {customer.lastname}
+                  </Link>
+                </td>
+                <td>{customer.email}</td>
+                <td>{customer.company}</td>
+                <td className="text-center">
+                  <span className="badge badge-light">
+                    {customer.invoices.length}
+                  </span>
+                </td>
+                <td className="text-center">
+                  {customer.totalAmount.toLocaleString()} €
+                </td>
+                <td>
+                  <button
+                    onClick={() => handleDelete(customer.id)}
+                    disabled={customer.invoices.length > 0}
+                    className="btn btn-sm btn-danger"
+                  >
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
+      {loading && <TableLoader />}
 
       {itemsPerPages < filteredCustomers.length && (
         <Pagination

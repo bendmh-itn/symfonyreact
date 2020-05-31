@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Field from "../components/forms/Field";
 import { Link } from "react-router-dom";
 import userAPI from "../services/userAPI";
+import { toast } from "react-toastify";
 
 const RegisterPage = ({ history }) => {
   const [user, setUser] = useState({
@@ -38,11 +39,13 @@ const RegisterPage = ({ history }) => {
       apiErrors.passwordConfirm =
         "Les deux mots de passe ne sont pas identiques";
       setErrors(apiErrors);
+      toast.error("Il y a des erreurs dans votre formulaire");
       return;
     }
     try {
       await userAPI.register(user);
       setErrors({});
+      toast.success("Vous êtes désormais inscrit. VOus pouvez vous connecter");
       history.replace("/login");
     } catch ({ response }) {
       const { violations } = response.data;
@@ -51,6 +54,7 @@ const RegisterPage = ({ history }) => {
           apiErrors[propertyPath] = message;
         });
         setErrors(apiErrors);
+        toast.error("Il y a des erreurs dans votre formulaire");
       }
     }
   };
