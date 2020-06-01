@@ -3,6 +3,7 @@ import Pagination from "../components/Pagination";
 import CustomersAPI from "../services/customersAPI";
 import { Link } from "react-router-dom";
 import TableLoader from "../components/loaders/TableLoader";
+import { toast } from "react-toastify";
 
 const CustomersPage = (props) => {
   const [customers, setCustomers] = useState([]);

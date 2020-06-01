@@ -1,10 +1,10 @@
-import axios from 'axios'
+import axios from "axios";
+import { USERS_API } from "../config";
 
-
-function register(user){
-    return axios.post("http://localhost:8000/api/users", user)
+function register(user) {
+  return axios.post(USERS_API, user);
 }
 
-export default{
-    register
-}
+export default {
+  register,
+};
