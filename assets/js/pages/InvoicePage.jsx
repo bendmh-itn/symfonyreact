@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Field from "../components/forms/Field";
-import Select from "../components/forms/select";
+import Select from "../components/forms/Select";
 import { Link } from "react-router-dom";
 import InvoicesAPI from "../services/invoicesAPI";
 import CustomersAPI from "../services/customersAPI";
